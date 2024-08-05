@@ -13,6 +13,9 @@ const int lcdColumns = 16;
 const int lcdRows = 2;
 LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
 
+int prevRed = -1, prevGreen = -1, prevBlue = -1;    
+float prevBrightness = -1.0, prevSaturation = -1.0;
+
 void setup() {
   Serial.begin(115200);
   lcd.init();
@@ -22,18 +25,26 @@ void setup() {
   pinMode(buttonBlackPin, INPUT_PULLUP);
 }
 
+bool valueChanged(int newValue, int oldValue) {
+  return abs(newValue - oldValue) > oldValue * 0.02;
+}
+
+bool valueChanged(float newValue, float oldValue) {
+  return abs(newValue - oldValue) > oldValue * 0.02;
+}
+
 void loop() {
   int potRedValue = analogRead(potRedPin);
   int potGreenValue = analogRead(potGreenPin);
   int potBlueValue = analogRead(potBluePin);
   int potBrightValue = analogRead(potBrightPin);
-  int potSaturationValue = analogRead(potSaturationPin); // Read the new potentiometer
+  int potSaturationValue = analogRead(potSaturationPin);
 
   int red = map(potRedValue, 0, 4095, 0, 255);
   int green = map(potGreenValue, 0, 4095, 0, 255);
   int blue = map(potBlueValue, 0, 4095, 0, 255);
-  int brightness = map(potBrightValue, 0, 4095, 0, 255);
-  int saturation = map(potSaturationValue, 0, 4095, 0, 255); // Map the new potentiometer value
+  float brightness = map(potBrightValue, 0, 4095, 0, 1000) / 1000.0;
+  float saturation = map(potSaturationValue, 0, 4095, 0, 1000) / 1000.0;
   
   bool buttonBlackState = digitalRead(buttonBlackPin) == LOW;
   bool buttonBlueState = digitalRead(buttonBluePin) == LOW;
@@ -48,7 +59,7 @@ void loop() {
   Serial.print(" Brightness: ");
   Serial.print(brightness);
   Serial.print(" Saturation: ");
-  Serial.print(saturation); // Print saturation value
+  Serial.print(saturation);
   Serial.print(" Blue Button: ");
   Serial.print(buttonBlueState ? "Pressed" : "Released");
   Serial.print(" Black Button: ");
@@ -56,7 +67,7 @@ void loop() {
   Serial.print(" Yellow Button: ");
   Serial.println(buttonYellowState ? "Pressed" : "Released");
 
-  // Check raw analog values for debugging
+  // Serial print raw analog values
   Serial.print("Raw Red: ");
   Serial.println(potRedValue);
   Serial.print("Raw Green: ");
@@ -68,33 +79,50 @@ void loop() {
   Serial.print("Raw Saturation: ");
   Serial.println(potSaturationValue);
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("R:");
-  lcd.print(red);
-  lcd.print(" G:");
-  lcd.print(green);
-  lcd.print(" B:");
-  lcd.print(blue);
-  
-  lcd.setCursor(0, 1);
-  lcd.print("Br:");
-  lcd.print(brightness);
-  lcd.print(" Sat:");
-  lcd.print(saturation); // Display saturation value
+  bool updateLCD = false;
 
-  if (buttonBlackState) {
-    lcd.setCursor(8, 1);
-    lcd.print("0");
-  }
-  if (buttonBlueState) {
-    lcd.setCursor(9, 1);
-    lcd.print("1");
-  }
-  if (buttonYellowState) {
-    lcd.setCursor(10, 1);
-    lcd.print("2");
+  if (valueChanged(red, prevRed) || valueChanged(green, prevGreen) || valueChanged(blue, prevBlue) ||
+      valueChanged(brightness, prevBrightness) || valueChanged(saturation, prevSaturation)) {
+    updateLCD = true;
+    Serial.println("Value Changed.");
   }
 
-  delay(500);  // Delay to avoid flooding monitor
+  if (updateLCD) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("R:");
+    lcd.print(red);
+    lcd.print(" G:");
+    lcd.print(green);
+    lcd.print(" B:");
+    lcd.print(blue);
+    
+    lcd.setCursor(0, 1);
+    lcd.print("Br:");
+    lcd.print(brightness, 2); // Display with 2 decimal places
+    lcd.print(" Sat:");
+    lcd.print(saturation, 2); // Display with 2 decimal places
+
+    if (buttonBlackState) {
+      lcd.setCursor(8, 1);
+      lcd.print("0");
+    }
+    if (buttonBlueState) {
+      lcd.setCursor(9, 1);
+      lcd.print("1");
+    }
+    if (buttonYellowState) {
+      lcd.setCursor(10, 1);
+      lcd.print("2");
+    }
+
+    // Update prev values
+    prevRed = red;
+    prevGreen = green;
+    prevBlue = blue;
+    prevBrightness = brightness;
+    prevSaturation = saturation;
+  }
+
+  delay(500);  // Delay to avoid flood monitor
 }

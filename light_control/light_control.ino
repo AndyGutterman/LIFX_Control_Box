@@ -1,14 +1,12 @@
 #include <LiquidCrystal_I2C.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include "config.h"
 
-// WiFi credentials
-const char* ssid = "ssid";
-const char* password = "pass";
-
-// LIFX API token and light ID
-const String lifx_token = "token";
-const String light_id = "light_id";
+const char* ssid = WIFI_SSID;
+const char* password = WIFI_PASSWORD;
+const String lifx_token = LIFX_TOKEN;
+const String light_id = LIGHT_ID;
 
 
 // Pin definitions
@@ -27,6 +25,10 @@ LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
 // Previous values for comparison
 int prevRed = -1, prevGreen = -1, prevBlue = -1;
 float prevBrightness = -1.0, prevSaturation = -1.0;
+
+// Timing for HTTP requests
+unsigned long lastRequestTime = 0;
+const unsigned long requestInterval = 500; // 500 milliseconds
 
 void setup() {
   Serial.begin(115200);
@@ -62,16 +64,7 @@ void loop() {
   float brightness = map(potBrightValue, 0, 4095, 0, 1000) / 1000.0;
   float saturation = map(potSaturationValue, 0, 4095, 0, 1000) / 1000.0;
 
-  Serial.print("Red: ");
-  Serial.print(red);
-  Serial.print(" Green: ");
-  Serial.print(green);
-  Serial.print(" Blue: ");
-  Serial.print(blue);
-  Serial.print(" Brightness: ");
-  Serial.print(brightness);
-  Serial.print(" Saturation: ");
-  Serial.print(saturation);
+
 
   bool updateLCD = false;
 
@@ -168,21 +161,6 @@ void updateLifxLight(float hue, float brightness, float saturation) {
     Serial.println(payload);
 
     int httpResponseCode = http.PUT(payload);
-      if (httpResponseCode == 429) { // (Too Many Requests)
-      String resetTimeStr = http.getHeader("X-RateLimit-Reset");
-      unsigned long resetTime = resetTimeStr.toInt() * 1000; // Convert to ms
-      unsigned long currentTime = millis();
-
-      if (resetTime > currentTime) {
-        unsigned long waitTime = resetTime - currentTime;
-        Serial.print("Rate limit exceeded. Waiting for ");
-        Serial.print(waitTime / 1000.0);
-        Serial.println(" seconds.");
-        delay(waitTime); // Wait.
-      }
-      httpResponseCode = http.PUT(payload);
-    }
-
     if (httpResponseCode > 0) {
       String response = http.getString();
       Serial.print("Response code: ");

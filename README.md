@@ -1,6 +1,6 @@
 # LIFX Control Box
-Basic physical control box for my LIFX smart light using potentiometers and an LCD display. 
-I also utilized 3D models found on online for the housings, see below. 
+- Basic physical control box for my LIFX smart light using potentiometers and an LCD display. 
+- I also utilized 3D models found on online for the housings, see sources below to check them out.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/AndyGutterman/LIFX_Control_Box/main/demo_images/overview.jpg" width="600" alt="Overview">

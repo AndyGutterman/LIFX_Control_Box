@@ -33,7 +33,7 @@
 3. **Install LiquidCrystal_I2C**
    Download, install from zip: [LiquidCrystal_I2C](https://github.com/johnrickman/LiquidCrystal_I2C) - For controlling the LCD display.
    
-5. **Set Environment Variables**
+5. **Set Variables**
 
     **(Windows)**
     ```bash

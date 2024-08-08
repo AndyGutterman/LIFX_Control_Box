@@ -7,9 +7,9 @@ Basic physical control box for my LIFX smart light using potentiometers and an L
 
 ## Hardware
 
-- **Potentiometers**: Adjust Red, Green, Blue, Brightness, and Saturation.
+- **Potentiometers**: Adjust RGB values, brightness, and saturation.
+- **ESP-32**: Connect pins and uses WiFi to interface with LIFX API.
 - **LCD Display**: Show current values.
-- **WiFi Module**: Connect to WiFi and LIFX API.
 
 ## Wiring
 
@@ -21,7 +21,7 @@ Basic physical control box for my LIFX smart light using potentiometers and an L
 - [LiquidCrystal_I2C](https://github.com/johnrickman/LiquidCrystal_I2C) - For controlling the LCD display.
 - WIP
 
-## Potentiometer Case
+## Potentiometer Case (3D Printed)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/AndyGutterman/LIFX_Control_Box/main/demo_images/pot_case.jpg" width="600" alt="Potentiometer Case">
@@ -30,6 +30,13 @@ Basic physical control box for my LIFX smart light using potentiometers and an L
 3D Model source: [Volume Knob Controller for PC](https://www.printables.com/model/557980-volume-knob-controller-for-pc-deej)  
 Modifications: Drilled 3 holes for output cables plus power and ground.
 
-## LCD Case
+## LCD Case (3D Printed)
 
 3D Model source: [LCD Case on Thingiverse](https://www.thingiverse.com/thing:3183550)
+
+
+## Future Improvement Ideas:
+  - Add Buttons for common presets
+  - Add ability to change temperature
+  - Improve response time without hitting rate limits
+  - Create all-in-one case to contain all components (ESP32/Pots/Buttons/LCD)

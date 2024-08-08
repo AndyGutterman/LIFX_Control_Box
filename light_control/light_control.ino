@@ -42,47 +42,11 @@ void setup() {
 }
 
 bool valueChanged(int newValue, int oldValue) {
-  return abs(newValue - oldValue) > oldValue * 0.02;
+  return abs(newValue - oldValue) > oldValue * 0.02; // 0.02 margin
 }
 
 bool valueChanged(float newValue, float oldValue) {
-  return abs(newValue - oldValue) > oldValue * 0.02;
-}
-
-// Convert RGB to Hue, Saturation, and Brightness
-void rgbToHsb(int red, int green, int blue, float& hue, float& saturation, float& brightness) {
-  float r = red / 255.0;
-  float g = green / 255.0;
-  float b = blue / 255.0;
-  
-  float maxVal = max(max(r, g), b);
-  float minVal = min(min(r, g), b);
-  float delta = maxVal - minVal;
-  
-  brightness = maxVal;
-  
-  if (delta == 0) {
-    hue = 0; // Hue is irrelevant when saturation is 0
-    saturation = 0;
-  } else {
-    saturation = delta / maxVal;
-    
-    if (maxVal == r) {
-      hue = (g - b) / delta;
-    } else if (maxVal == g) {
-      hue = 2 + (b - r) / delta;
-    } else {
-      hue = 4 + (r - g) / delta;
-    }
-    
-    hue *= 60;
-    if (hue < 0) {
-      hue += 360;
-    }
-  }
-  
-  saturation *= 100; // Convert to percentage
-  brightness *= 100; // Convert to percentage
+  return abs(newValue - oldValue) > oldValue * 0.02;  // 0.02 margin
 }
 
 void loop() {
@@ -119,7 +83,6 @@ void loop() {
 
   if (updateLCD) {
     lcd.clear();
-    
     lcd.setCursor(0, 0);
     lcd.print("RGB(" + String(red) + "," + String(green) + "," + String(blue) + ")");
     lcd.setCursor(0, 1);
@@ -130,7 +93,7 @@ void loop() {
 
     // Convert RGB to HSB
     float hue, sat, br;
-    rgbToHsb(red, green, blue, hue, sat, br);  // Better color mixing compared to RGB values for some reason.. LGTM.
+    rgbToHsb(red, green, blue, hue, sat, br);  // Better color mixing compared to RGB values for some reason..
 
     // If all RGB values are 255, set saturation to 0 to make the light white
     if (red == 255 && green == 255 && blue == 255) {
@@ -139,9 +102,8 @@ void loop() {
       brightness = 1.0; // Full brightness
     }
 
+    
     float brightness = map(potBrightValue, 0, 4095, 0, 1000) / 1000.0;
-  
-    // Update light
     updateLifxLight(hue, brightness, saturation);
 
     // Update prev values
@@ -152,7 +114,43 @@ void loop() {
     prevSaturation = saturation;
   }
 
-  delay(500);  // Delay to avoid flood monitor
+  delay(500);
+}
+
+// Convert RGB to Hue, Saturation, and Brightness
+void rgbToHsb(int red, int green, int blue, float& hue, float& saturation, float& brightness) {
+  float r = red / 255.0;
+  float g = green / 255.0;
+  float b = blue / 255.0;
+  
+  float maxVal = max(max(r, g), b);
+  float minVal = min(min(r, g), b);
+  float delta = maxVal - minVal;
+  
+  brightness = maxVal;
+  
+  if (delta == 0) {
+    hue = 0; // Hue is irrelevant when saturation is 0
+    saturation = 0;
+  } else {
+    saturation = delta / maxVal;
+    
+    if (maxVal == r) {
+      hue = (g - b) / delta;
+    } else if (maxVal == g) {
+      hue = 2 + (b - r) / delta;
+    } else {
+      hue = 4 + (r - g) / delta;
+    }
+    
+    hue *= 60;
+    if (hue < 0) {
+      hue += 360;
+    }
+  }
+  
+  saturation *= 100; // Convert to percentage
+  brightness *= 100; // Convert to percentage
 }
 
 void updateLifxLight(float hue, float brightness, float saturation) {

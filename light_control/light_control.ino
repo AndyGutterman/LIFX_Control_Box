@@ -170,6 +170,20 @@ void updateLifxLight(float hue, float brightness, float saturation) {
     Serial.println(payload);
 
     int httpResponseCode = http.PUT(payload);
+      if (httpResponseCode == 429) { // (Too Many Requests)
+      String resetTimeStr = http.getHeader("X-RateLimit-Reset");
+      unsigned long resetTime = resetTimeStr.toInt() * 1000; // Convert to ms
+      unsigned long currentTime = millis();
+
+      if (resetTime > currentTime) {
+        unsigned long waitTime = resetTime - currentTime;
+        Serial.print("Rate limit exceeded. Waiting for ");
+        Serial.print(waitTime / 1000.0);
+        Serial.println(" seconds.");
+        delay(waitTime); // Wait.
+      }
+      httpResponseCode = http.PUT(payload);
+    }
 
     if (httpResponseCode > 0) {
       String response = http.getString();

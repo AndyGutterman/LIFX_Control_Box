@@ -35,12 +35,9 @@ Modifications: Drilled 3 holes for output cables plus power and ground.
 3D Model source: [LCD Case on Thingiverse](https://www.thingiverse.com/thing:3183550)
 
 
-## Todo list:
+## Todo list / Future Improvements
   - Make LCD turn off automatically after a set period of time
   - Improve response time without hitting rate limits
-
-
-## Future Improvement Ideas:
   - Add Buttons for common presets
   - Add ability to change temperature
   - Create all-in-one case to contain all components (ESP32/Pots/Buttons/LCD)

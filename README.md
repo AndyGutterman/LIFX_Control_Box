@@ -17,10 +17,8 @@
 - **Potentiometer Pins**: Red `32`, Green `35`, Blue `34`, Brightness `33`, Saturation `36`
 - **LCD I2C Address**: `0x27`
 
-## Libraries
-
+## External Libraries
 - [LiquidCrystal_I2C](https://github.com/johnrickman/LiquidCrystal_I2C) - For controlling the LCD display.
-- WIP
 
 ## Potentiometer Case (3D Printed)
 

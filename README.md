@@ -17,9 +17,40 @@
 - **Potentiometer Pins**: Red `32`, Green `35`, Blue `34`, Brightness `33`, Saturation `36`
 - **LCD Pins** SDA `21`, SCL`22`
 - **LCD I2C Address** `0x27`
-  
-## External Libraries
-- [LiquidCrystal_I2C](https://github.com/johnrickman/LiquidCrystal_I2C) - For controlling the LCD display.
+
+## Installation Instructions (Assuming identical connections)
+
+1. **Clone me**
+    ```bash
+    git clone git@github.com:AndyGutterman/LIFX_Control_Box.git
+    ```
+    
+2. **Navigate to the Project Directory**
+    ```bash
+    cd LIFX_esp_project/light_control/
+    ```
+
+3. **Install LiquidCrystal_I2C**
+   Download, install from zip: [LiquidCrystal_I2C](https://github.com/johnrickman/LiquidCrystal_I2C) - For controlling the LCD display.
+   
+5. **Set Environment Variables**
+
+    **(Windows)**
+    ```bash
+    set WIFI_SSID=your_wifi_ssid
+    set WIFI_PASSWORD=your_wifi_password
+    set LIFX_TOKEN=your_lifx_token
+    set LIGHT_ID=your_light_id
+    ```
+6. **Run the Build Script**
+    ```bash
+    python build.py
+    ```
+    Verify that `config.h` is created or updated in your project directory. Otherwise, edit light_control.ino directly.
+
+7. **Upload to ESP-32**
+   
+
 
 ## Potentiometer Case (3D Printed)
 
@@ -36,8 +67,6 @@ Modifications: Drilled 3 holes for output cables plus power and ground.
 
 
 ## Todo list / Future Improvements
-  - Make LCD turn off automatically after a set period of time
-  - Improve response time without hitting rate limits
   - Add Buttons for common presets
   - Add ability to change temperature
   - Create all-in-one case to contain all components (ESP32/Pots/Buttons/LCD)

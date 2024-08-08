@@ -2,11 +2,14 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-// WiFi and LIFX API token
+// WiFi credentials
 const char* ssid = "ssid";
 const char* password = "pass";
+
+// LIFX API token and light ID
 const String lifx_token = "token";
 const String light_id = "light_id";
+
 
 // Pin definitions
 const int potRedPin = 32;
@@ -136,6 +139,8 @@ void loop() {
       brightness = 1.0; // Full brightness
     }
 
+    float brightness = map(potBrightValue, 0, 4095, 0, 1000) / 1000.0;
+  
     // Update light
     updateLifxLight(hue, brightness, saturation);
 

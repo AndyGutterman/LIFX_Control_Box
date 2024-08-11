@@ -88,17 +88,13 @@ void loop() {
     float hue, sat, br;
     rgbToHsb(red, green, blue, hue, sat, br);  // Better color mixing compared to RGB values for some reason..
 
-    // If all RGB values are 255, set saturation to 0 to make the light white
+    // If all RGB values are 255, set saturation to 0 to make the light white (after updating the LCD)
     if (red == 255 && green == 255 && blue == 255) {
-      hue = 0;
       saturation = 0;
-      brightness = 1.0; // Full brightness
     }
 
-    
-    float brightness = map(potBrightValue, 0, 4095, 0, 1000) / 1000.0;
     updateLifxLight(hue, brightness, saturation);
-
+  
     // Update prev values
     prevRed = red;
     prevGreen = green;

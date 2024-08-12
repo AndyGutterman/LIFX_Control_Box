@@ -24,7 +24,8 @@ LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
 
 // Previous values for comparison
 int prevRed = -1, prevGreen = -1, prevBlue = -1;
-float prevBrightness = -1.0, prevSaturation = -1.0;
+float prevBrightness = -1.0;
+int prevPotSaturationValue = -1; // Use actual pot value for comparison because saturation is changed if RGB are all 255.
 
 // Timing for HTTP requests
 unsigned long lastRequestTime = 0;
@@ -69,9 +70,14 @@ void loop() {
   bool updateLCD = false;
 
   if (valueChanged(red, prevRed) || valueChanged(green, prevGreen) || valueChanged(blue, prevBlue) ||
-      valueChanged(brightness, prevBrightness) || valueChanged(saturation, prevSaturation)) {
+      valueChanged(brightness, prevBrightness)) {
     updateLCD = true;
     Serial.println("Value Changed.");
+  }
+
+  if  (valueChanged(potSaturationValue, prevPotSaturationValue)){
+    updateLCD = true;
+    Serial.println("Saturation value changed on knob");
   }
 
   if (updateLCD) {
@@ -93,6 +99,7 @@ void loop() {
       saturation = 0;
     }
 
+
     updateLifxLight(hue, brightness, saturation);
   
     // Update prev values
@@ -101,6 +108,7 @@ void loop() {
     prevBlue = blue;
     prevBrightness = brightness;
     prevSaturation = saturation;
+    prevPotSaturationValue = potSaturationValue;
   }
 
   delay(500);
